@@ -2,12 +2,12 @@ package com.ocado.examplesimulation
 
 import com.ocado.event.scheduling.EventScheduler
 import com.ocado.examplecontroller.externalapi.inward.Plan
-import com.ocado.examplesimulation.controllerapiabstraction.ToControllerApi
+import com.ocado.examplesimulation.controllerapiabstraction.SimulationToControllerApi
 import com.ocado.javautils.Runnables.toRunnable
 
 import scala.util.Random
 
-class Simulation(scheduler: EventScheduler, controller: ToControllerApi) {
+class Simulation(scheduler: EventScheduler, controller: SimulationToControllerApi) {
   /**
     * Without this, the system would not be deterministic
     */

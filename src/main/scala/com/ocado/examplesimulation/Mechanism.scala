@@ -2,10 +2,10 @@ package com.ocado.examplesimulation
 
 import com.ocado.event.scheduling.EventScheduler
 import com.ocado.examplecontroller.externalapi.inward.ObjectArrived
-import com.ocado.examplesimulation.controllerapiabstraction.ToControllerApi
+import com.ocado.examplesimulation.controllerapiabstraction.SimulationToControllerApi
 import com.ocado.javautils.Runnables.toRunnable
 
-class Mechanism(scheduler: EventScheduler, controller: ToControllerApi, orderedObjectsToFeed: List[Int]) {
+class Mechanism(scheduler: EventScheduler, controller: SimulationToControllerApi, orderedObjectsToFeed: List[Int]) {
   var nextIndexToFeed = 0
   var currentObject: Option[Int] = None
 

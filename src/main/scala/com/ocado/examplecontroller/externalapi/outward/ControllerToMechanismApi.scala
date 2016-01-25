@@ -2,7 +2,7 @@ package com.ocado.examplecontroller.externalapi.outward
 
 import com.ocado.examplesimulation.Simulation
 
-class ToMechanismAPI {
+class ControllerToMechanismApi {
   var simulation: Simulation = null
   def setSimulation(simulation: Simulation) = this.simulation = simulation
 

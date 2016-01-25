@@ -2,12 +2,12 @@ package com.ocado.examplesimulation
 
 import akka.actor.{ActorSystem, Props}
 import com.ocado.event.scheduling.{ExecutorEventScheduler, SimpleDiscreteEventScheduler}
-import com.ocado.examplecontroller.externalapi.outward.ToMechanismAPI
+import com.ocado.examplecontroller.externalapi.outward.ControllerToMechanismApi
 import com.ocado.examplecontroller.{AkkaBasedController, SimpleController}
 import com.ocado.examplesimulation.AkkaSchedulerMode.AkkaSchedulerMode
 import com.ocado.examplesimulation.ControllerMode.ControllerMode
 import com.ocado.examplesimulation.CoreSchedulerMode.CoreSchedulerMode
-import com.ocado.examplesimulation.controllerapiabstraction.{AkkaBasedToControllerApi, SimpleToControllerApi}
+import com.ocado.examplesimulation.controllerapiabstraction.{AkkaBasedSimulationToControllerApi, SimpleSimulationToControllerApi}
 import com.ocado.javautils.Runnables.toRunnable
 import com.ocado.time.{AdjustableTimeProvider, UtcTimeProvider}
 import com.typesafe.config.ConfigFactory
@@ -38,7 +38,7 @@ object StartUp extends App {
 
   val scheduler = createCoreScheduler()
 
-  val toMechanismApi = new ToMechanismAPI()
+  val toMechanismApi = new ControllerToMechanismApi()
 
   val controller = createController()
 
@@ -61,8 +61,8 @@ object StartUp extends App {
 
       val controller = actorSystem.actorOf(Props(new AkkaBasedController(toMechanismApi)), "Controller")
 
-      new AkkaBasedToControllerApi(actorSystem, controller)
-    case ControllerMode.SimpleController => new SimpleToControllerApi(new SimpleController(toMechanismApi))
+      new AkkaBasedSimulationToControllerApi(actorSystem, controller)
+    case ControllerMode.SimpleController => new SimpleSimulationToControllerApi(new SimpleController(toMechanismApi))
   }
 
   def createCoreScheduler() = coreSchedulerMode match {

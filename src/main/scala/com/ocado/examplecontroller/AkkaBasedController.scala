@@ -1,9 +1,9 @@
 package com.ocado.examplecontroller
 
 import akka.actor.Actor
-import com.ocado.examplecontroller.externalapi.outward.ToMechanismAPI
+import com.ocado.examplecontroller.externalapi.outward.ControllerToMechanismApi
 
-class AkkaBasedController(api: ToMechanismAPI) extends Actor {
+class AkkaBasedController(api: ControllerToMechanismApi) extends Actor {
   var simpleController = new SimpleController(api)
 
   override def receive = {
