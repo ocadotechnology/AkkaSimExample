@@ -24,6 +24,10 @@ public interface EventScheduler {
 
     TimeProvider getTimeProvider();
 
+    default void doNow(Runnable r, String description) {
+        schedule(Event.at(0, description).run(r));
+    }
+
     default void doAt(double time, Runnable r, String description) {
         schedule(Event.at(time, description).run(r));
     }

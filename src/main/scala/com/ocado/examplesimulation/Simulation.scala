@@ -46,6 +46,9 @@ class Simulation(scheduler: EventScheduler, controller: ControllerApi) {
     if (!mechanism.currentObject.contains(obj)) {
       throw new IllegalStateException(s"Controller instructed mechanism to move $obj which is not present")
     }
-    scheduler.doIn(2000, () => mechanism.moveTo(destination), "move to")
+
+    scheduler.doNow(
+      () => scheduler.doIn(2000, () => mechanism.moveTo(destination), "move to"),
+      "defer scheduling to avoid TimeProvider races")
   }
 }

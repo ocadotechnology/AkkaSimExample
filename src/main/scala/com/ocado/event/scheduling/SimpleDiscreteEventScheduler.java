@@ -30,6 +30,10 @@ public class SimpleDiscreteEventScheduler implements EventScheduler {
             throw exception;
         }
 
+        reallySchedule(event);
+    }
+
+    private void reallySchedule(Event event) {
         event.setScheduler(this);
         event.setTimeProvider(timeProvider);
 
@@ -38,6 +42,11 @@ public class SimpleDiscreteEventScheduler implements EventScheduler {
         if (!isExecuting) {
             startExecutingEvents();
         }
+    }
+
+    @Override
+    public void doNow(Runnable r, String description) {
+        reallySchedule(Event.at(0, description).run(r));
     }
 
     @Override
@@ -59,7 +68,9 @@ public class SimpleDiscreteEventScheduler implements EventScheduler {
                 break;
             }
             isExecuting = true;
-            timeProvider.setTime(nextEvent.time);
+            if (timeProvider.getTime() < nextEvent.time) {
+                timeProvider.setTime(nextEvent.time);
+            }
             try {
                 nextEvent.action();
             } catch (Throwable t) {
