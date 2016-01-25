@@ -27,4 +27,10 @@ public interface EventScheduler {
     default void doAt(double time, Runnable r, String description) {
         schedule(Event.at(time, description).run(r));
     }
+
+    default Event doIn(double delay, Runnable r, String description) {
+        Event event = Event.at(getTimeProvider().getTime() + delay, description).run(r);
+        schedule(event);
+        return event;
+    }
 }

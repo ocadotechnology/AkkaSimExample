@@ -4,16 +4,43 @@ import akka.actor.{ActorSystem, Props}
 import com.ocado.event.scheduling.{ExecutorEventScheduler, SimpleDiscreteEventScheduler}
 import com.ocado.examplecontroller.externalapi.outward.ControllerToMechanismAPI
 import com.ocado.examplecontroller.{AkkaBasedController, SimpleController}
+import com.ocado.examplesimulation.AkkaSchedulerMode.AkkaSchedulerMode
+import com.ocado.examplesimulation.ControllerMode.ControllerMode
+import com.ocado.examplesimulation.CoreSchedulerMode.CoreSchedulerMode
 import com.ocado.examplesimulation.controllerapiabstraction.{AkkaBasedControllerApi, SimpleControllerApi}
 import com.ocado.javautils.Runnables.toRunnable
 import com.ocado.time.{AdjustableTimeProvider, UtcTimeProvider}
+import com.typesafe.config.ConfigFactory
+import com.ocado.event.scheduling.AkkaDiscreteEventScheduler
+
+object CoreSchedulerMode extends Enumeration {
+  type CoreSchedulerMode = Value
+  val RealTime, DiscreteEvent = Value
+}
+
+object ControllerMode extends Enumeration {
+  type ControllerMode = Value
+  val SimpleController, AkkaController = Value
+}
+
+object AkkaSchedulerMode extends Enumeration {
+  type AkkaSchedulerMode = Value
+  val Default, AkkaDiscreteEventScheduler = Value
+}
 
 object StartUp extends App {
-  val scheduler = createScheduler(args(0).toBoolean)
+  val coreSchedulerMode = CoreSchedulerMode.withName(args(0))
+  val controllerMode = ControllerMode.withName(args(1))
+  val akkaSchedulerMode = controllerMode match {
+    case ControllerMode.AkkaController => Option(AkkaSchedulerMode.withName(args(2)))
+    case other => Option.empty
+  }
+
+  val scheduler = createCoreScheduler(coreSchedulerMode)
 
   val toMechanismApi = new ControllerToMechanismAPI()
 
-  val controller = createController(args(1).toBoolean)
+  val controller = createController(controllerMode, akkaSchedulerMode)
 
   val simulation = new Simulation(scheduler, controller)
 
@@ -21,16 +48,25 @@ object StartUp extends App {
 
   scheduler.doAt(0, () => simulation.run(), "run simulation")
 
-  def createController(controlWithAkka: Boolean) = controlWithAkka match {
-    case true =>
-      val actorSystem = ActorSystem.create()
+  def createController(controllerMode: ControllerMode, akkaSchedulerMode: Option[AkkaSchedulerMode]) = controllerMode match {
+    case ControllerMode.AkkaController =>
+      val actorSystem = akkaSchedulerMode.getOrElse(AkkaSchedulerMode.Default) match {
+        case AkkaSchedulerMode.Default => ActorSystem.create()
+        case AkkaSchedulerMode.AkkaDiscreteEventScheduler =>
+          val config = ConfigFactory
+            .parseString(s"akka.scheduler.implementation=${classOf[AkkaDiscreteEventScheduler].getName}")
+            .withFallback(ConfigFactory.load())
+          ActorSystem.create("ControllerActorSystem", config)
+      }
+
       val controller = actorSystem.actorOf(Props(new AkkaBasedController(toMechanismApi)), "Controller")
+
       new AkkaBasedControllerApi(actorSystem, controller)
-    case false => new SimpleControllerApi(new SimpleController(toMechanismApi))
+    case ControllerMode.SimpleController => new SimpleControllerApi(new SimpleController(toMechanismApi))
   }
 
-  def createScheduler(discrete: Boolean) = discrete match {
-    case true => new SimpleDiscreteEventScheduler(new AdjustableTimeProvider(0), () => controller.shutdown())
-    case false => new ExecutorEventScheduler(new UtcTimeProvider())
+  def createCoreScheduler(coreSchedulerMode: CoreSchedulerMode) = coreSchedulerMode match {
+    case CoreSchedulerMode.DiscreteEvent => new SimpleDiscreteEventScheduler(new AdjustableTimeProvider(0), () => controller.shutdown())
+    case CoreSchedulerMode.RealTime => new ExecutorEventScheduler(new UtcTimeProvider())
   }
 }

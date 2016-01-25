@@ -25,7 +25,9 @@ public class SimpleDiscreteEventScheduler implements EventScheduler {
     public void schedule(Event event) {
         if (event.time < timeProvider.getTime()) {
             stop();
-            throw new IllegalStateException("Attempted to schedule " + event + " " + timeProvider.getTime() + " in the past");
+            IllegalStateException exception = new IllegalStateException("Attempted to schedule " + event + " " + timeProvider.getTime() + " in the past");
+            exception.printStackTrace();
+            throw exception;
         }
 
         event.setScheduler(this);
