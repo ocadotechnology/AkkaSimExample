@@ -2,7 +2,7 @@ package com.ocado.examplesimulation.controllerapiabstraction
 
 import com.ocado.examplecontroller.SimpleController
 
-class SimpleControllerApi(controller: SimpleController) extends ControllerApi {
+class SimpleToControllerApi(controller: SimpleController) extends ToControllerApi {
   override def receive(obj: Any): Unit = controller.receive(obj)
 
   /**

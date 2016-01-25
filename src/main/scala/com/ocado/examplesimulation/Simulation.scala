@@ -2,12 +2,12 @@ package com.ocado.examplesimulation
 
 import com.ocado.event.scheduling.EventScheduler
 import com.ocado.examplecontroller.externalapi.inward.Plan
-import com.ocado.examplesimulation.controllerapiabstraction.ControllerApi
+import com.ocado.examplesimulation.controllerapiabstraction.ToControllerApi
 import com.ocado.javautils.Runnables.toRunnable
 
 import scala.util.Random
 
-class Simulation(scheduler: EventScheduler, controller: ControllerApi) {
+class Simulation(scheduler: EventScheduler, controller: ToControllerApi) {
   /**
     * Without this, the system would not be deterministic
     */
@@ -40,15 +40,5 @@ class Simulation(scheduler: EventScheduler, controller: ControllerApi) {
         }
       }
     }, terminationEventDescription)
-  }
-
-  def moveTo(obj: Int, destination: Int) = {
-    if (!mechanism.currentObject.contains(obj)) {
-      throw new IllegalStateException(s"Controller instructed mechanism to move $obj which is not present")
-    }
-
-    scheduler.doNow(
-      () => scheduler.doIn(2000, () => mechanism.moveTo(destination), "move to"),
-      "defer scheduling to avoid TimeProvider races")
   }
 }

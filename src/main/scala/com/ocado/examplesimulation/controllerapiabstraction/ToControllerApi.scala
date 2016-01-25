@@ -1,6 +1,6 @@
 package com.ocado.examplesimulation.controllerapiabstraction
 
-trait ControllerApi {
+trait ToControllerApi {
   def receive(obj: Any)
   def shutdown()
 }

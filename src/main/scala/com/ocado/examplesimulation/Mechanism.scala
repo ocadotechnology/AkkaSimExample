@@ -2,10 +2,10 @@ package com.ocado.examplesimulation
 
 import com.ocado.event.scheduling.EventScheduler
 import com.ocado.examplecontroller.externalapi.inward.ObjectArrived
-import com.ocado.examplesimulation.controllerapiabstraction.ControllerApi
+import com.ocado.examplesimulation.controllerapiabstraction.ToControllerApi
 import com.ocado.javautils.Runnables.toRunnable
 
-class Mechanism(scheduler: EventScheduler, controller: ControllerApi, orderedObjectsToFeed: List[Int]) {
+class Mechanism(scheduler: EventScheduler, controller: ToControllerApi, orderedObjectsToFeed: List[Int]) {
   var nextIndexToFeed = 0
   var currentObject: Option[Int] = None
 
@@ -16,7 +16,18 @@ class Mechanism(scheduler: EventScheduler, controller: ControllerApi, orderedObj
     nextIndexToFeed += 1
   }
 
-  def moveTo(destination: Int) = {
+  def moveTo(obj: Int, destination: Int) = {
+    scheduler.doNow(() => {
+      if (!currentObject.contains(obj)) {
+        throw new IllegalStateException(s"Controller instructed mechanism to move $obj which is not present")
+      }
+
+      scheduler.doIn(2000, () => performMoveTo(destination), "move to")
+    },
+    "defer scheduling to avoid TimeProvider races")
+  }
+
+  private def performMoveTo(destination: Int) = {
     println(s"Moved ${currentObject.get} to $destination")
     currentObject = None
 

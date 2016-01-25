@@ -1,9 +1,9 @@
 package com.ocado.examplecontroller
 
 import com.ocado.examplecontroller.externalapi.inward.{ObjectArrived, Plan}
-import com.ocado.examplecontroller.externalapi.outward.ControllerToMechanismAPI
+import com.ocado.examplecontroller.externalapi.outward.ToMechanismAPI
 
-class SimpleController(api: ControllerToMechanismAPI) {
+class SimpleController(api: ToMechanismAPI) {
   var currentPlan: Option[Plan] = None
 
   var currentObject: Option[Int] = None
