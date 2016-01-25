@@ -21,7 +21,7 @@ class Mechanism(scheduler: EventScheduler, controller: ControllerApi, orderedObj
     currentObject = None
 
     if (!hasFinishedFeeding) {
-      scheduler.doAt(scheduler.getTimeProvider.getTime + 1000, () => feed(), "feed")
+      scheduler.doIn(1000, () => feed(), "feed")
     }
   }
 

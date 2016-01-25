@@ -25,18 +25,18 @@ class Simulation(scheduler: EventScheduler, controller: ControllerApi) {
 
     println(s"Time: ${scheduler.getTimeProvider.getTime}")
 
-    scheduler.doAt(scheduler.getTimeProvider.getTime + 2000, () => controller.receive(plan), "tell controller what the plan is")
+    scheduler.doIn(2000, () => controller.receive(plan), "tell controller what the plan is")
 
-    scheduler.doAt(scheduler.getTimeProvider.getTime + 4000, () => mechanism.feed(), "initial feed")
+    scheduler.doIn(4000, () => mechanism.feed(), "initial feed")
 
     val terminationEventDescription = "termination check event"
-    scheduler.doAt(scheduler.getTimeProvider.getTime + 5000, new Runnable {
+    scheduler.doIn(5000, new Runnable {
       override def run(): Unit = {
         if (mechanism.hasFinishedMovingTo) {
           controller.shutdown()
           scheduler.stop()
         } else {
-          scheduler.doAt(scheduler.getTimeProvider.getTime + 1000, this, terminationEventDescription)
+          scheduler.doIn(1000, this, terminationEventDescription)
         }
       }
     }, terminationEventDescription)
@@ -46,6 +46,6 @@ class Simulation(scheduler: EventScheduler, controller: ControllerApi) {
     if (!mechanism.currentObject.contains(obj)) {
       throw new IllegalStateException(s"Controller instructed mechanism to move $obj which is not present")
     }
-    scheduler.doAt(scheduler.getTimeProvider.getTime + 2000, () => mechanism.moveTo(destination), "move to")
+    scheduler.doIn(2000, () => mechanism.moveTo(destination), "move to")
   }
 }
