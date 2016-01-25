@@ -29,38 +29,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <repositories>
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>central</id>
-            <name>libs-releases</name>
-            <url>http://maven.ocado.com/nexus/content/groups/cfcsoftware-outbound-release-group</url>
-        </repository>
-        <repository>
-            <snapshots />
-            <id>snapshots</id>
-            <name>libs-snapshots</name>
-            <url>http://maven.ocado.com/nexus/content/groups/cfcsoftware-snapshot-group</url>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>central</id>
-            <url>http://maven.ocado.com/nexus/content/groups/cfcsoftware-outbound-release-group</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </pluginRepository>
-        <pluginRepository>
-            <id>snapshots</id>
-            <url>http://maven.ocado.com/nexus/content/groups/cfcsoftware-snapshot-group</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </pluginRepository>
-    </pluginRepositories>
 </project>
