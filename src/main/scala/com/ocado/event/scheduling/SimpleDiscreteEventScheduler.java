@@ -38,6 +38,11 @@ public class SimpleDiscreteEventScheduler implements EventScheduler {
         }
     }
 
+    @Override
+    public void cancel(Event event) {
+        scheduledEvents.remove(event);
+    }
+
     private Event getNextEvent() {
         if (!scheduledEvents.isEmpty()) {
             return scheduledEvents.pollFirst();

@@ -18,6 +18,8 @@ public interface EventScheduler {
 
     void schedule(Event e);
 
+    void cancel(Event e);
+
     void stop();
 
     TimeProvider getTimeProvider();
