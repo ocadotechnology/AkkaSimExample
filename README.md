@@ -18,7 +18,7 @@ When running an Akka controller against a discrete event simulation, you can mak
 
 See the [architecture diagram](https://docs.google.com/drawings/d/15lsfo0Jk5hpzLO63QIYJOyPnwg-a1RAxbwk5Zj5yRjM/edit?usp=sharing) for a high level overview.
 
-`StartUp` creates an `EventScheduler`, `Controller` and `Simulation`. It hooks the `Controller` and `Simulation` together via `ControllerToMechanismAPI` and `ControllerApi`. It schedules a call to `run` the `Simulation` such that it executes via the `EventScheduler`.
+`StartUp` creates an `EventScheduler`, `Controller` and `Simulation`. It hooks the `Controller` and `Simulation` together via `ControllerToMechanismApi` and `SimulationToControllerApi`. It schedules a call to `run` the `Simulation` such that it executes via the `EventScheduler`.
 
 The `Simulation` creates a `Mechanism`, and schedules telling the `Controller` about the `Plan` of what to send where. It seperately schedules the `Mechanism` to `feed` the first object. It also schedules an `Event` that either re-schedules itself when executed, or terminates the program if the `Mechanism` has run out of work.
 
