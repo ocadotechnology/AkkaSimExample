@@ -22,7 +22,7 @@ See the [architecture diagram](https://docs.google.com/drawings/d/15lsfo0Jk5hpzL
 
 The `Simulation` creates a `Mechanism`, and schedules telling the `Controller` about the `Plan` of what to send where. It seperately schedules the `Mechanism` to `feed` the first object. It also schedules an `Event` that either re-schedules itself when executed, or terminates the program if the `Mechanism` has run out of work.
 
-The `Controller` receives the `Plan` and the message that the `Mechanism` sends to say that an `ObjectArrived`. It then decides where to send the object based on the `Plan` and tells this to the `Simulation`.
+The `Controller` receives the `Plan` and the message that the `Mechanism` sends to say that an `ObjectArrived`. It then decides where to send the object based on the `Plan` and tells this to the `Mechanism`.
 
-The `Simulation` schedules the object to `moveTo` the destination on the `Mechanism`. When this `Event` executes, it schedules another `feed` to the `Mechanism`. When the feed `Event` is executed, another `ObjectReceived` message is sent to the `Controller` and the loop repeats.
+The `Mechanism` schedules the object to move to the destination. When this `Event` executes, it schedules another `feed` to the `Mechanism`. When the feed `Event` is executed, another `ObjectReceived` message is sent to the `Controller` and the loop repeats.
 
