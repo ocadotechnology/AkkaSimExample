@@ -34,6 +34,7 @@ public class SimpleDiscreteEventScheduler implements EventScheduler {
     }
 
     private void reallySchedule(Event event) {
+        System.out.println("Scheduling " + event + " at " + timeProvider.getTime() + " on thread " + Thread.currentThread().getId());
         event.setScheduler(this);
         event.setTimeProvider(timeProvider);
 

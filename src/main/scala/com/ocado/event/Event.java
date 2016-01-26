@@ -25,7 +25,7 @@ public abstract class Event {
     }
 
     public final void action() {
-        System.out.println("Executing " + this + " at " + timeProvider.getTime());
+        System.out.println("Executing " + this + " at " + timeProvider.getTime() + " on thread " + Thread.currentThread().getId());
         execute();
     }
 
