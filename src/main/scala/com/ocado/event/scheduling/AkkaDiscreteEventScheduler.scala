@@ -6,14 +6,13 @@ import akka.actor.{Cancellable, Scheduler}
 import akka.event.LoggingAdapter
 import com.ocado.event.Event
 import com.ocado.javautils.Runnables.toRunnable
-import com.ocado.time.AdjustableTimeProvider
 import com.typesafe.config.Config
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.FiniteDuration
 
 class AkkaDiscreteEventScheduler(config: Config, log: LoggingAdapter, threadFactory: ThreadFactory) extends Scheduler {
-  val discreteEventScheduler = new SimpleDiscreteEventScheduler(new AdjustableTimeProvider(0), () => {})
+  val discreteEventScheduler = EventSchedulerHolder.scheduler
 
   override def scheduleOnce(delay: FiniteDuration, runnable: Runnable)(implicit executor: ExecutionContext): Cancellable =
     new CancellableEvent(discreteEventScheduler.doIn(delay.length, runnable, "Akka scheduleOnce"))

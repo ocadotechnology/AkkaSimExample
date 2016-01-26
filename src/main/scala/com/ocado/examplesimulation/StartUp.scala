@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit
 
 import akka.actor.{ActorSystem, Props}
 import akka.util.Timeout
-import com.ocado.event.scheduling.{AkkaDiscreteEventScheduler, ExecutorEventScheduler, SimpleDiscreteEventScheduler}
+import com.ocado.event.scheduling.{AkkaDiscreteEventScheduler, EventSchedulerHolder, ExecutorEventScheduler, SimpleDiscreteEventScheduler}
 import com.ocado.examplecontroller.externalapi.outward.ControllerToMechanismApi
 import com.ocado.examplecontroller.{AkkaBasedController, SimpleController}
 import com.ocado.examplesimulation.controllerapiabstraction.{AkkaBasedSimulationToControllerApi, SimpleSimulationToControllerApi}
@@ -50,6 +50,7 @@ object StartUp extends App {
   }
 
   val scheduler = createCoreScheduler()
+  EventSchedulerHolder.scheduler = scheduler //TODO: find a better way of exposing a scheduler to AkkaDiscreteEventScheduler
 
   val toMechanismApi = new ControllerToMechanismApi()
 
